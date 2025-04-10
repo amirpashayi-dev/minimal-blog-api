@@ -1,7 +1,14 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView
-from rest_framework.permissions import IsAuthenticated
-from .serializers import PostSerializer
+from django.http import Http404
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import PostSerializer, AuthorPostsSerializer
 from .models import Post
+from accounts.models import User
+
 
 class PostListCreateAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -21,3 +28,20 @@ class PostDetailAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user)
+
+
+class AuthorPostsAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, username):
+        try:
+            author = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response('User Does Not Exists', status=status.HTTP_400_BAD_REQUEST)
+        posts = Post.objects.filter(user__username=username, status='published')
+        data = {
+            'posts': posts,
+            'author': author
+        }
+        ser_data = AuthorPostsSerializer(instance=data)
+        return Response(ser_data.data, status=status.HTTP_200_OK)
