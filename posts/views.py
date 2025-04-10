@@ -32,6 +32,10 @@ class PostDetailAPIView(RetrieveUpdateDestroyAPIView):
 
 class AuthorPostsAPIView(APIView):
     permission_classes = [AllowAny]
+    filter_backends = (SearchFilter, OrderingFilter)
+    filterset_fields = ['updated_at']
+    search_fields = ['title', 'excerpt']
+
 
     def get(self, request, username):
         try:
@@ -39,6 +43,8 @@ class AuthorPostsAPIView(APIView):
         except User.DoesNotExist:
             return Response('User Does Not Exists', status=status.HTTP_400_BAD_REQUEST)
         posts = Post.objects.filter(user__username=username, status='published')
+        for backend in self.filter_backends:
+            posts = backend().filter_queryset(request, posts, self)
         data = {
             'posts': posts,
             'author': author
