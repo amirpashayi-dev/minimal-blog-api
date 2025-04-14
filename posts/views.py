@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count, Q
 from .serializers import PostSerializer, AuthorPostsSerializer
 from .models import Post
 from accounts.models import User
@@ -28,7 +29,9 @@ class PostDetailAPIView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
+        return Post.objects.annotate(
+            comments_count=Count('comment', filter=Q(comment__is_approved=True))
+        ).filter(user=self.request.user)
 
 
 class AuthorPostsAPIView(APIView):
@@ -43,7 +46,7 @@ class AuthorPostsAPIView(APIView):
             author = User.objects.get(username=username)
         except User.DoesNotExist:
             return Response('User Does Not Exists', status=status.HTTP_400_BAD_REQUEST)
-        posts = Post.objects.filter(user__username=username, status='published')
+        posts = Post.objects.filter(user__username=username, status='published').annotate(comments_count=Count('comment', filter=Q(comment__is_approved=True)))
         for backend in self.filter_backends:
             posts = backend().filter_queryset(request, posts, self)
 
