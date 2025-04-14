@@ -1,11 +1,12 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, PostLike
 from accounts.models import User
 from comments.models import Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
     comments_count = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -18,6 +19,9 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_comments_count(self, obj):
         return Comment.objects.filter(post=obj, is_approved=True).count()
+
+    def get_likes_count(self, obj):
+        return PostLike.objects.filter(post=obj, value='like').count()
 
 
 class AuthorSerializer(serializers.ModelSerializer):
