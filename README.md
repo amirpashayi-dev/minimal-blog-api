@@ -1,39 +1,45 @@
-# Minimal Blog API
+# 📰 Minimal Blog API
 
-A simple and clean Django REST API for a blogging system.
+A clean and modular backend for a blogging platform built with Django and Django REST Framework. The API is still under development and includes essential features like authentication, post management, comments, and more.
 
-This project is intended for learning and personal portfolio purposes.  
-It's built using Django and Django REST Framework (DRF) and includes basic blog functionalities such as posts, categories, and user authentication.
+## 🚀 Features (so far)
 
----
+- ✅ JWT Authentication
+- ✅ Custom User Model (phone-based login)
+- ✅ Create / Read / Update / Delete Posts
+- ✅ Rich text content with CKEditor
+- ✅ Comment system with threaded replies
+- ✅ Like / Dislike system
+- ✅ Follow / Unfollow authors
+- ✅ Category system
+- ✅ Search, Ordering, and Pagination
 
-## 🚀 Tech Stack
+## 📦 Tech Stack
 
-- Python
-- Django
+- Python 3.11+
+- Django 5+
 - Django REST Framework
-- JWT Authentication (Simple JWT)
+- SimpleJWT
+- CKEditor
+- django-filter
+
+## 📁 Getting Started
+
+```bash
+git clone https://github.com/amirpashayi-dev/minimal-blog-api.git
+cd minimal-blog-api
+python -m venv venv
+source venv/bin/activate  # For Windows use: venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+
+## 📌 Note
+
+This project is still under active development and new features will be added soon.
 
 ---
 
-## 📦 Features (to be added gradually)
-
-- Post creation and management
-- Category system
-- Public/private posts
-- User authentication (login, register)
-- Permissions & ownership
-- Comments (optional)
-- API documentation with Swagger / Redoc
-
----
-
-## 🛠 Installation (Coming Soon)
-
-Instructions will be added once the project reaches a functional stage.
-
----
-
-## 📄 License
-
-MIT License
+Developed with ❤️ by [Amir Pashayi](https://github.com/amirpashayi-dev)
